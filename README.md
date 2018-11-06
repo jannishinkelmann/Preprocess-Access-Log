@@ -12,7 +12,7 @@ Output logfile format:
 ```
 
 ## Usage:
-$ python processLog.py [-h] [-a] [-z] [-v] inputFile outputFile [domainName [domainName ...]]
+```$ python processLog.py [-h] [-a] [-z] [-v] inputFile outputFile [domainName [domainName ...]]
 
 positional arguments:
   inputFile          log file to read and parse
@@ -24,7 +24,7 @@ optional arguments:
   -a, --anonymizeIp  skip client's IP address
   -z, --zipfile      open Gzip input file
   -v, --verbose      run in verbose mode
-
+```
 ## Matomo integration
 The output format then may be imported to your Matomo server (https://matomo.org) via matomo-log-analytics (https://github.com/matomo-org/matomo-log-analytics, https://matomo.org/log-analytics/).
 
