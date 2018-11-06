@@ -1,5 +1,5 @@
 # Preprocess-Access-Log
-Preprocessing web server access.log files to have them compatible to standard format. Removes domain name.
+Preprocessing web server access.log files to have them compatible to standard format. Removes domain names and filters for specified domains e.g. when different sites are hosted on the same webserver.
 
 Input logfile format:
 ```
