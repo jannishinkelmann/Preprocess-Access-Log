@@ -12,7 +12,8 @@ Output logfile format:
 ```
 
 ## Usage:
-```$ python processLog.py [-h] [-a] [-z] [-v] inputFile outputFile [domainName [domainName ...]]
+```
+$ python processLog.py [-h] [-a] [-z] [-v] inputFile outputFile [domainName [domainName ...]]
 
 positional arguments:
   inputFile          log file to read and parse
