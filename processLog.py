@@ -1,5 +1,4 @@
 #!/usr/bin/python
-import sys
 import os
 import gzip
 import argparse
@@ -8,15 +7,12 @@ def processLog(srcFilePath, dstFilePath, domainFilterList=[], switchAnonymizeIp=
     if os.path.isfile(dstFilePath):
         raise OSError('File ' + dstFilePath + ' already exists.')
 
-    srcFile = _getFile(srcFilePath)
-
-    with open(dstFilePath, 'w') as dstFile:
-        line = srcFile.readline()
-        lineNum = 1
-        while line:
-            if _isRelevantLine(line, domainFilterList): _processLine(line, dstFile, switchAnonymizeIp)
-            line = srcFile.readline()
-            lineNum += 1
+    with _getFile(srcFilePath) as srcFile, open(dstFilePath, 'w') as dstFile:
+        for lineNr,line in enumerate(srcFile):
+            if _isRelevantLine(line, domainFilterList):
+                line = _removeDomain(line)
+                if switchAnonymizeIp: line = _anonymizeIp(line)
+                dstFile.write(line)
 
 def _getFile(filePath):
     if _isGzipFile(filePath):
@@ -26,14 +22,10 @@ def _getFile(filePath):
 
 def _isRelevantLine(line, domainFilterList):
     if _isWatchAllSet(domainFilterList):
-        return true
+        return True
     if _getDomain(line) in domainFilterList:
-        return true
-
-def _processLine(line, dstFile, switchAnonymizeIp):
-    str = _removeDomain(line)
-    if switchAnonymizeIp: str = _anonymizeIp(str)
-    dstFile.write(str)
+        return True
+    return False
 
 def _isGzipFile(filePath):
     return os.path.splitext(filePath)[1]=='.gz'
@@ -44,7 +36,7 @@ def _getDomain(str):
 def _isWatchAllSet(domainFilterList):
     return len(domainFilterList) == 0
 
-def _removedomain(str):
+def _removeDomain(str):
     split = str.split(' ', 2)
     return split[0] +' '+ split[2]
 
