@@ -7,18 +7,18 @@ def processLog(srcFilePath, dstFilePath, domainFilterList=[], switchAnonymizeIp=
     if os.path.isfile(dstFilePath):
         raise OSError('File ' + dstFilePath + ' already exists.')
 
-    with _getFile(srcFilePath) as srcFile, open(dstFilePath, 'w') as dstFile:
+    with _openGzip(srcFilePath, 'r') as srcFile, open(dstFilePath, 'w') as dstFile:
         for lineNr,line in enumerate(srcFile):
             if _isRelevantLine(line, domainFilterList):
                 line = _removeDomain(line)
                 if switchAnonymizeIp: line = _anonymizeIp(line)
                 dstFile.write(line)
 
-def _getFile(filePath):
+def _openGzip(filePath, accessStr):
     if _isGzipFile(filePath):
-        return gzip.open(filePath,'r')
+        return gzip.open(filePath, accessStr)
     else:
-        return open(filePath,'r')
+        return open(filePath, accessStr)
 
 def _isRelevantLine(line, domainFilterList):
     if _isWatchAllSet(domainFilterList):
