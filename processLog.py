@@ -4,32 +4,25 @@ import os
 import gzip
 import argparse
 
-def processLog(inputFile, outputFile, domainName=[], anonymizeIp=False):
-    if os.path.isfile(outputFile):
-        raise OSError('File ' + outputFile + ' already exists.')
+def processLog(srcFilePath, dstFilePath, domainName=[], anonymizeIp=False):
+    if os.path.isfile(dstFilePath):
+        raise OSError('File ' + dstFilePath + ' already exists.')
 
-    if os.path.splitext(inputFile)[1]=='.gz':
-        with gzip.open(inputFile,'r') as srcFile, open(outputFile, 'w') as dstFile:
-            _processFile(srcFile, dstFile, domainName, anonymizeIp)
+    if _isGzipFile(srcFilePath):
+        srcFile = gzip.open(srcFilePath,'r')
     else:
-        with open(inputFile,'r') as srcFile, open(outputFile, 'w') as dstFile:
-            _processFile(srcFile, dstFile, domainName, anonymizeIp)
+        srcFile = open(srcFilePath,'r')
 
-def _anonymizeIp(str):
-    return '- ' + str.split(' ', 1)[1]
+    with open(dstFilePath, 'w') as dstFile:
+        line = srcFile.readline()
+        lineNum = 1
+        while line:
+            _processLine(line, dstFile, domainName, anonymizeIp)
+            line = srcFile.readline()
+            lineNum += 1
 
-def _removeDomainName(str):
-    split = str.split(' ', 2)
-    return split[0] +' '+ split[2]
-
-def _getDomainName(str):
-    return str.split(' ')[1]
-
-def _isWatchAllSet(domainName):
-    return len(domainName) == 0
-
-def _isDomainToBeWatched(domain, domainName):
-    return domain in domainName
+def _isGzipFile(filePath):
+    return os.path.splitext(filePath)[1]=='.gz'
 
 def _processLine(line, dstFile, domainName, anonymizeIp):
     if _isDomainToBeWatched(_getDomainName(line), domainName) or _isWatchAllSet(domainName):
@@ -37,19 +30,27 @@ def _processLine(line, dstFile, domainName, anonymizeIp):
         if anonymizeIp: str = _anonymizeIp(str)
         dstFile.write(str)
 
-def _processFile(srcFile, dstFile, domainName, anonymizeIp):
-    line = srcFile.readline()
-    lineNum = 1
-    while line:
-        _processLine(line, dstFile, domainName, anonymizeIp)
-        line = srcFile.readline()
-        lineNum += 1
+def _isDomainToBeWatched(domain, domainName):
+    return domain in domainName
+
+def _getDomainName(str):
+    return str.split(' ')[1]
+
+def _isWatchAllSet(domainName):
+    return len(domainName) == 0
+
+def _removeDomainName(str):
+    split = str.split(' ', 2)
+    return split[0] +' '+ split[2]
+
+def _anonymizeIp(str):
+    return '- ' + str.split(' ', 1)[1]
 
 if __name__ == '__main__':
     argparser = argparse.ArgumentParser()
-    argparser.add_argument('inputFile', help='log file to read and parse')
-    argparser.add_argument('outputFile', help='output file, write target')
+    argparser.add_argument('srcFilePath', help='log file to read and parse')
+    argparser.add_argument('dstFilePath', help='output file, write target')
     argparser.add_argument('domainName', help='domain(s) for which entries are filtered', nargs='*')
     argparser.add_argument('-a', '--anonymizeIp', help='skip client\'s IP address', action='store_true')
     args = argparser.parse_args()
-    processLog(args.inputFile, args.outputFile, args.domainName, args.anonymizeIp)
+    processLog(args.srcFilePath, args.dstFilePath, args.domainName, args.anonymizeIp)
