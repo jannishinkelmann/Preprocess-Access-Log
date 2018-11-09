@@ -4,11 +4,11 @@ import os
 import gzip
 import argparse
 
-def processLog(outputFile, inputFile, domainName=[], anonymizeIp=False, zipfile=False):
+def processLog(inputFile, outputFile, domainName=[], anonymizeIp=False):
     if os.path.isfile(outputFile):
         raise OSError('File ' + outputFile + ' already exists.')
 
-    if zipfile:
+    if os.path.splitext(inputFile)[1]=='.gz':
         with gzip.open(inputFile,'r') as srcFile, open(outputFile, 'w') as dstFile:
             _processFile(srcFile, dstFile, domainName, anonymizeIp)
     else:
@@ -51,6 +51,5 @@ if __name__ == '__main__':
     argparser.add_argument('outputFile', help='output file, write target')
     argparser.add_argument('domainName', help='domain(s) for which entries are filtered', nargs='*')
     argparser.add_argument('-a', '--anonymizeIp', help='skip client\'s IP address', action='store_true')
-    argparser.add_argument('-z', '--zipfile', help='open Gzip input file', action='store_true')
     args = argparser.parse_args()
-    processLog(args.outputFile, args.inputFile, args.domainName, args.anonymizeIp, args.zipfile)
+    processLog(args.inputFile, args.outputFile, args.domainName, args.anonymizeIp)
