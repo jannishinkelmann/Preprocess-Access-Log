@@ -63,5 +63,19 @@ With the input log file from first example this will result in the following out
 Notice that the third entry will not be included although analytics is a subdomain of example.com.
 
 ## Matomo integration
-The output format then may be imported to your Matomo server (https://matomo.org) via matomo-log-analytics (https://github.com/matomo-org/matomo-log-analytics, https://matomo.org/log-analytics/).
-
+The output format then may be imported to your Matomo analytics server via matomo-log-analytics (https://matomo.org/log-analytics/). Therefore you can use the included importLog.sh. Change the following values according to your needs:
+```
+PROCESS_SCRIPT_PATH="./processLog.py"
+IMPORT_SCRIPT_PATH="./Matomo/misc/log-analytics/import_logs.py"
+DOMAINS="example.com www.example.com"
+MATOMO_URL="https://analytics.example.com"
+MATOMO_USER="matomo_admin"
+MATOMO_PASS="SECRET"
+MATOMO_SITE_ID="1"
+MATOMO_OPTIONS="--enable-http-errors --enable-http-redirects --enable-static --enable-bots"
+```
+If you don't want to include all enties like bots and http errors you need to remove these flags from MATOMO_OPTIONS.
+Then run the script like this:
+```
+$ ./importLog.sh access_log.example
+```
