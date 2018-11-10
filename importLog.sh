@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Config
-PROCESS_SCRIPT_PATH="./processLog.py"
+PROCESS_SCRIPT_PATH="./processlog.py"
 IMPORT_SCRIPT_PATH="./Matomo/misc/log-analytics/import_logs.py"
 DOMAINS="example.com www.example.com"
 MATOMO_URL="https://analytics.example.com"

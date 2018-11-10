@@ -1,10 +1,10 @@
-# Preprocess-Access-Log
+# Preprocess Access Log
 Preprocessing web server access.log files to have them compatible to standard format. Removes domain names and filters for specified domains e.g. when different sites are hosted on the same webserver.
 
 ## Basic example:
 Read all lines from access_log.example, remove domain names and write to access_log_cleared.
 ```
-$ python processLog.py access_log.example access_log_cleared
+$ python processlog.py access_log.example access_log_cleared
 ```
 Input file access_log.example:
 ```
@@ -22,7 +22,7 @@ Output file access_log_cleared:
 
 ## Usage:
 ```
-$ python processLog.py [-h] [-a] srcFilePath dstFilePath [domainFilter [domainFilter ...]]
+$ python processlog.py [-h] [-a] srcFilePath dstFilePath [domainFilter [domainFilter ...]]
 
 positional arguments:
   srcFilePath        log file to read and parse
@@ -38,12 +38,12 @@ optional arguments:
 ### Gzip compressed files:
 Files with extention .gz will be decompressed automatically and then parsed. Output format as showed in example above.
 ```
-$ python processLog.py access_log_2018_w45-1.gz access_log_cleared
+$ python processlog.py access_log_2018_w45-1.gz access_log_cleared
 ```
 ### Remove client IP addresses
 Use option -a to also remove the IP addresses of clients from log entries and replace them with '-'.
 ```
-$ python processLog.py -a access_log.example access_log_cleared
+$ python processlog.py -a access_log.example access_log_cleared
 ```
 With the input log file from first example this will result in the following output in access_log_cleared:
 ```
@@ -54,7 +54,7 @@ With the input log file from first example this will result in the following out
 ### Filter for specific domains
 Add domain names to filter log entries. access_log_cleared will now just include entries for these specific domains.
 ```
-$ python processLog.py access_log.example access_log_cleared example.com www.example.com
+$ python processlog.py access_log.example access_log_cleared example.com www.example.com
 ```
 With the input log file from first example this will result in the following output in access_log_cleared:
 ```
@@ -63,9 +63,9 @@ With the input log file from first example this will result in the following out
 Notice that the third entry will not be included although analytics is a subdomain of example.com.
 
 ## Matomo integration
-The output format then may be imported to your Matomo analytics server via matomo-log-analytics (https://matomo.org/log-analytics/). Therefore you can use the included importLog.sh. Change the following values according to your needs:
+The output format then may be imported to your Matomo analytics server via matomo-log-analytics (https://matomo.org/log-analytics/). Therefore you can use the included importlog.sh. Change the following values according to your needs:
 ```
-PROCESS_SCRIPT_PATH="./processLog.py"
+PROCESS_SCRIPT_PATH="./processlog.py"
 IMPORT_SCRIPT_PATH="./Matomo/misc/log-analytics/import_logs.py"
 DOMAINS="example.com www.example.com"
 MATOMO_URL="https://analytics.example.com"
@@ -77,5 +77,5 @@ MATOMO_OPTIONS="--enable-http-errors --enable-http-redirects --enable-static --e
 If you don't want to include all enties like bots and http errors you need to remove these flags from MATOMO_OPTIONS.
 Then run the script like this:
 ```
-$ ./importLog.sh access_log.example
+$ ./importlog.sh access_log.example
 ```
