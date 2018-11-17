@@ -1,5 +1,6 @@
 import unittest
 import importlog
+import os
 
 
 class TestImportLog(unittest.TestCase):
@@ -15,3 +16,13 @@ class TestImportLog(unittest.TestCase):
         self.assertEqual(importlog.getMatomoPass(), 'secret')
         self.assertEqual(importlog.getMatomoSiteId(), '1')
         self.assertEqual(importlog.getMatomoOptions(), '--enable-http-errors --enable-http-redirects --enable-static --enable-bots')
+
+    def test_checkIfTmpFileExists(self):
+        existingFilePath = os.path.join(os.path.dirname(__file__), 'access_log.example')
+        notExistingFilePath = os.path.join(os.path.dirname(__file__), 'access_log_tmp.example')
+
+        self.assertFalse(os.path.isfile(notExistingFilePath))
+        self.assertFalse(importlog.checkIfTmpFileExists(notExistingFilePath))
+
+        self.assertTrue(os.path.isfile(existingFilePath))
+        self.assertRaises(OSError, importlog.checkIfTmpFileExists, existingFilePath)

@@ -5,8 +5,7 @@ import ConfigParser
 
 
 def importlogdir(inputPath):
-    if os.path.isfile(getTempFileName()):
-        raise OSError('Cannot write temp file. File ' + getTempFileName() + ' already exists.')
+    checkIfTmpFileExists(getTempFileName())
 
     if os.path.isdir(inputPath):
         for file in os.listdir(inputPath):
@@ -18,7 +17,13 @@ def importlogdir(inputPath):
 def _importlog(inputPath):
     if os.path.isfile(inputPath):
         processlog.processLog(inputPath, getTempFileName(), getDomains(), getAnonymizeIp())
+        os.system("{} --url={} --login={} --password={} --idsite={} {} {}".format(getImportScriptPath(), getMatomoUrl(), getMatomoUser(), getMatomoPass(), getMatomoSiteId(), getMatomoOptions(), getTempFileName()))
         os.remove(getTempFileName())
+
+
+def checkIfTmpFileExists(tempFileName):
+    if os.path.isfile(tempFileName):
+        raise OSError('Cannot write temp file. File ' + tempFileName + ' already exists.')
 
 
 def getProcessScriptPath():
