@@ -30,8 +30,8 @@ def getImportScriptPath():
 
 
 def getDomains():
-    configStr = getconfig().get('importer', 'domains').strip()
-    domainList = str.split(configStr, ',')
+    configStr = getconfig().get('importer', 'domains')
+    domainList = str.split(configStr, ' ')
     return domainList
 
 
@@ -67,14 +67,15 @@ __config = None
 
 def getconfig():
     global __config
+    configFilePath = os.path.join(os.path.dirname(__file__), 'settings.ini')
 
     if __config is None:
         __config = ConfigParser.ConfigParser()
 
-        if os.path.isfile('settings.ini'):
-            __config.read('settings.ini')
+        if os.path.isfile(configFilePath):
+            __config.read(configFilePath)
         else:
-            raise OSError('settings.ini not found')
+            raise OSError('Settings file not found at ' + configFilePath)
 
     return __config
 
