@@ -4,21 +4,21 @@ import processlog
 import ConfigParser
 
 
-__config = None
+def importlogdir(inputPath):
+    if os.path.isfile(getTempFileName()):
+        raise OSError('Cannot write temp file. File ' + getTempFileName() + ' already exists.')
+
+    if os.path.isdir(inputPath):
+        for file in os.listdir(inputPath):
+            _importlog(inputPath)
+    else:
+        _importlog(inputPath)
 
 
-def getconfig():
-    global __config
-
-    if __config is None:
-        __config = ConfigParser.ConfigParser()
-
-        if os.path.isfile('settings.ini'):
-            __config.read('settings.ini')
-        else:
-            raise OSError('settings.ini not found')
-
-    return __config
+def _importlog(inputPath):
+    if os.path.isfile(inputPath):
+        processlog.processLog(inputPath, getTempFileName(), getDomains(), getAnonymizeIp())
+        os.remove(getTempFileName())
 
 
 def getProcessScriptPath():
@@ -30,7 +30,9 @@ def getImportScriptPath():
 
 
 def getDomains():
-    return str.split(',', getconfig().get('importer', 'domains').strip())
+    configStr = getconfig().get('importer', 'domains').strip()
+    domainList = str.split(configStr, ',')
+    return domainList
 
 
 def getAnonymizeIp():
@@ -61,21 +63,20 @@ def getMatomoOptions():
     return getconfig().get('matomo', 'options')
 
 
-def importlogdir(inputPath):
-    if os.path.isfile(getTempFileName()):
-        raise OSError('Cannot write temp file. File ' + getTempFileName() + ' already exists.')
+__config = None
 
-    if os.path.isdir(inputPath):
-        for file in os.listdir(inputPath):
-            _importlog(inputPath)
-    else:
-        _importlog(inputPath)
+def getconfig():
+    global __config
 
+    if __config is None:
+        __config = ConfigParser.ConfigParser()
 
-def _importlog(inputPath):
-    if os.path.isfile(inputPath):
-        processlog.processLog(inputPath, getTempFileName(), getDomains(), getAnonymizeIp())
-        os.remove(getTempFileName())
+        if os.path.isfile('settings.ini'):
+            __config.read('settings.ini')
+        else:
+            raise OSError('settings.ini not found')
+
+    return __config
 
 
 if __name__ == '__main__':
