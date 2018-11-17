@@ -29,10 +29,14 @@ def getImportScriptPath():
     return getconfig().get('importer', 'import_script_path')
 
 
+def getDomainListFromString(str):
+    list = str.split(' ')
+    return filter(None, list)
+
+
 def getDomains():
     configStr = getconfig().get('importer', 'domains')
-    domainList = str.split(configStr, ' ')
-    return domainList
+    return getDomainListFromString(configStr)
 
 
 def getAnonymizeIp():
