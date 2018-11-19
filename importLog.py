@@ -9,7 +9,6 @@ def importlogdir(inputPath):
 
     if os.path.isdir(inputPath):
         for file in os.listdir(inputPath):
-            _importlog(inputPath)
     else:
         _importlog(inputPath)
 
